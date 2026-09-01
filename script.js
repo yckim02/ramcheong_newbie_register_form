@@ -175,8 +175,14 @@
   /* ---------------------------------------------------------------------
    * 등록하기 클릭 시 "사랑배달부" 캐릭터가 버튼 위를 빠르게 지나가는 연출
    * --------------------------------------------------------------------- */
-  function flyCourier(buttonEl) {
-    if (!buttonEl || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  /* 사랑배달부 라미청이 — 등록하기를 누르면 버튼 위를 왼쪽→오른쪽으로 날아간다.
+   * 한 번 휙 지나가고 끝이 아니라, 서버 응답을 기다리는 동안 계속 반복해서
+   * "지금 등록 중"이라는 로딩 표시 역할을 겸한다. stop()이 불리면 사라진다. */
+  function startCourierLoop(buttonEl) {
+    var noop = { stop: function () {} };
+    if (!buttonEl || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return noop;
+    if (typeof buttonEl.animate !== "function") return noop;
+
     var rect = buttonEl.getBoundingClientRect();
     var img = document.createElement("img");
     img.src = "./assets/courier.png";
@@ -192,6 +198,8 @@
     img.style.left = startX + "px";
     document.body.appendChild(img);
     var dx = endX - startX;
+
+    // 한 바퀴 1.6초 — 눈으로 따라갈 수 있는 속도. 양 끝에서 스르륵 나타났다 사라진다.
     var anim = img.animate(
       [
         { transform: "translateX(0)", opacity: 0 },
@@ -199,9 +207,20 @@
         { transform: "translateX(" + (dx * 0.86) + "px)", opacity: 1, offset: 0.86 },
         { transform: "translateX(" + dx + "px)", opacity: 0 }
       ],
-      { duration: 750, easing: "cubic-bezier(.25,.7,.3,1)" }
+      { duration: 1600, iterations: Infinity, easing: "cubic-bezier(.35,.15,.35,.9)" }
     );
-    anim.onfinish = function () { img.remove(); };
+
+    var stopped = false;
+    return {
+      stop: function () {
+        if (stopped) return;
+        stopped = true;
+        try { anim.cancel(); } catch (err) {}
+        img.style.transition = "opacity 0.25s ease";
+        img.style.opacity = "0";
+        setTimeout(function () { img.remove(); }, 260);
+      }
+    };
   }
 
   function showError(msg) { errorBox.textContent = msg; errorBox.classList.add("show"); }
@@ -220,7 +239,7 @@
     if (!name) { showError("이름을 입력해주세요."); form.name.focus(); return; }
     if (!phone) { showError("연락처를 입력해주세요."); form.phone.focus(); return; }
 
-    flyCourier(submitBtn);
+    var courier = startCourierLoop(submitBtn);
 
     // '있음'으로 교회 정보를 적었다가 '없음'으로 바꿔 제출하면
     // 그 전에 적어둔 교회 정보는 보내지 않는다 (모순된 행 방지)
@@ -267,6 +286,7 @@
         }
       })
       .finally(function () {
+        courier.stop();
         submitBtn.disabled = false;
         submitBtn.textContent = "등록하기";
       });

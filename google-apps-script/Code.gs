@@ -1,6 +1,19 @@
+/**
+ * 람청 새가족 등록폼 → 구글시트 적재 스크립트 (v2)
+ *
+ * v2 변경점 (반드시 이 버전으로 교체 후 [배포]→[배포 관리]→연필→새 버전→[배포]):
+ *  - 체크박스/텍스트 서식을 시트 전체에 미리 깔지 않는다.
+ *    (미리 깔면 그 셀들이 "값 있는 행"으로 취급돼 데이터가 1001행부터 쌓였고,
+ *     1000행 밖에는 서식이 없어 연락처 앞자리 0도 잘렸다)
+ *  - 대신 등록이 들어올 때 그 행에만 서식(연락처 텍스트)과 체크박스를 넣는다.
+ *
+ * 설치/배포 절차와 환경변수는 README-배포.md 4절 참고.
+ * 스크립트 속성 SHARED_TOKEN = Vercel의 SHEETS_WEBHOOK_TOKEN 과 동일한 값.
+ */
+
 var SHEET_NAME = '새가족 등록폼 data';
 
-/* 시트 컬럼 정의 */
+/* 시트 컬럼 정의 — 순서가 곧 열 순서. 데이터가 쌓인 뒤에는 순서를 바꾸지 말 것. */
 var FIELDS = [
   ['submitted_at',                  '접수일시'],
   ['name',                          '이름'],
@@ -17,15 +30,15 @@ var FIELDS = [
   ['visit_source_etc',              '방문경로(기타)'],
   ['attendance_wish',               '참석 희망'],
   ['contacted',                     '응대 여부'],
-  ['leader_memo',                    '메모'],
+  ['leader_memo',                   '메모'],
   ['prior_church_naver',            '네이버 검색 원본']
 ];
 
 /* 리더가 직접 채우는 칸 — 폼에서 값이 와도 무시하고 항상 비워둠. */
 var LEADER_ONLY = { contacted: true, leader_memo: true };
 
-/* 연락처는 "01012345678" 처럼 들어오면 시트가 숫자로 인식해 앞자리 0을 날려버린다.
- * 그래서 이 열들은 서식을 텍스트(@)로 고정한다. */
+/* "01012345678" 처럼 들어오면 시트가 숫자로 인식해 앞자리 0을 날리므로
+ * 이 열들은 기록 직전에 해당 행 셀만 텍스트(@) 서식으로 고정한다. */
 var TEXT_COLUMNS = ['phone', 'prior_church_naver'];
 
 function jsonOut(obj) {
@@ -36,10 +49,10 @@ function jsonOut(obj) {
 
 /** 배포가 살아있는지 확인용. 데이터는 아무것도 돌려주지 않는다. */
 function doGet() {
-  return jsonOut({ ok: true, service: 'ramcheong-new-family', sheet: SHEET_NAME });
+  return jsonOut({ ok: true, service: 'ramcheong-new-family', sheet: SHEET_NAME, version: 2 });
 }
 
-/** '새가족 등록폼 data' 시트를 찾고, 없으면 머리글까지 갖춰서 새로 만든다. */
+/** 등록 탭을 찾고, 없으면 머리글만 갖춰서 새로 만든다. (서식/체크박스는 미리 깔지 않는다) */
 function getOrCreateSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(SHEET_NAME);
@@ -53,26 +66,6 @@ function getOrCreateSheet() {
     sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
     sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
     sheet.setFrozenRows(1);
-
-    // 텍스트로 고정할 열 서식 지정 (데이터가 들어오기 전에 해둬야 의미가 있다)
-    TEXT_COLUMNS.forEach(function (key) {
-      var idx = indexOfField(key);
-      if (idx >= 0) {
-        sheet.getRange(2, idx + 1, sheet.getMaxRows() - 1, 1).setNumberFormat('@');
-      }
-    });
-
-    // '응대 여부'는 리더가 체크하며 쓰는 칸이라 체크박스로 만들어둔다
-    var contactedIdx = indexOfField('contacted');
-    if (contactedIdx >= 0) {
-      try {
-        sheet.getRange(2, contactedIdx + 1, sheet.getMaxRows() - 1, 1).insertCheckboxes();
-      } catch (e) {
-        // 체크박스는 있으면 편한 정도라, 실패해도 등록 자체는 계속 진행한다
-        console.warn('체크박스 삽입 실패: ' + e);
-      }
-    }
-
     sheet.autoResizeColumns(1, headers.length);
   }
 
@@ -128,7 +121,7 @@ function doPost(e) {
   try {
     var sheet = getOrCreateSheet();
 
-    // 접수일시는 새가족를 믿지 않고 서버(시트 시간대) 기준으로 찍는다
+    // 접수일시는 제출자를 믿지 않고 서버(시트 시간대) 기준으로 찍는다
     var now = Utilities.formatDate(
       new Date(),
       SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone(),
@@ -142,8 +135,31 @@ function doPost(e) {
       return toCell(data[key]);
     });
 
-    sheet.appendRow(row);
-    return jsonOut({ ok: true, row: sheet.getLastRow() });
+    // 마지막 데이터 행 바로 아래에 기록. 시트 끝을 넘으면 행을 늘린다.
+    var rowIndex = sheet.getLastRow() + 1;
+    if (rowIndex > sheet.getMaxRows()) {
+      sheet.insertRowsAfter(sheet.getMaxRows(), rowIndex - sheet.getMaxRows());
+    }
+
+    // 값을 쓰기 전에, 이 행의 텍스트 열 서식을 먼저 고정 (앞자리 0 보존)
+    TEXT_COLUMNS.forEach(function (key) {
+      var idx = indexOfField(key);
+      if (idx >= 0) sheet.getRange(rowIndex, idx + 1).setNumberFormat('@');
+    });
+
+    sheet.getRange(rowIndex, 1, 1, row.length).setValues([row]);
+
+    // '응대 여부'는 이 행에만 체크박스를 넣는다 (실패해도 등록은 유효)
+    var contactedIdx = indexOfField('contacted');
+    if (contactedIdx >= 0) {
+      try {
+        sheet.getRange(rowIndex, contactedIdx + 1).insertCheckboxes();
+      } catch (err2) {
+        console.warn('체크박스 삽입 실패: ' + err2);
+      }
+    }
+
+    return jsonOut({ ok: true, row: rowIndex });
   } catch (err) {
     console.error('등록 저장 실패: ' + err);
     return jsonOut({ ok: false, error: 'sheet_write_failed' });
