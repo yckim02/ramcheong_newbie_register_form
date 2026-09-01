@@ -1,2 +1,6 @@
-# ramcheong_newbie_register_form
-Ramcheong Newbie Register Form
+# 람원교회 청년교구 새가족 등록폼
+
+QR로 접속하는 새가족 전자 등록 페이지. 교회 검색(네이버 지역검색)과 등록 저장(구글시트)은 서버리스 함수(`api/`)를 거치며, 모든 키는 Vercel 환경변수로만 주입됩니다.
+
+- 배포·키 발급 절차: [README-배포.md](./README-배포.md)
+- 구글시트 수집 스크립트: `google-apps-script/Code.gs`

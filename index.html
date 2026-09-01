@@ -1,36 +1,171 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>람원교회 청년교구 새가족 등록 — 시안 선택</title>
-<!-- 시안 A/B 피드백용 임시 랜딩 페이지.
-     최종 시안이 확정되면 이 파일을 확정본으로 교체하고 QR은 루트 주소로 만든다. -->
-<style>
-  :root { color-scheme: light; }
-  body {
-    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    background: #f4f7fb; color: #1f3044;
-    font-family: "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  }
-  .box { text-align: center; padding: 32px 20px; }
-  h1 { font-size: 20px; margin: 0 0 6px; }
-  p { font-size: 14px; color: #6b7a8d; margin: 0 0 24px; }
-  a.variant {
-    display: block; width: min(80vw, 320px); margin: 0 auto 12px; padding: 16px;
-    background: #fff; border: 1px solid #dde5ee; border-radius: 14px;
-    text-decoration: none; color: inherit; font-size: 15px; font-weight: 700;
-  }
-  a.variant span { display: block; font-size: 12.5px; font-weight: 400; color: #6b7a8d; margin-top: 4px; }
-  a.variant:hover { border-color: #066aeb; }
-</style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>람원교회 새가족 등록 · 시안A</title>
+<meta name="description" content="람원교회 청년교구 새가족 등록카드 — 전자 등록폼 시안 A (소프트/캐릭터 버전)" />
+<link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <div class="box">
-    <h1>새가족 등록폼 시안 미리보기</h1>
-    <p>둘 중 확정되면 이 페이지는 확정본으로 교체됩니다.</p>
-    <a class="variant" href="./index-a.html">시안 A<span>소프트 · 캐릭터 버전</span></a>
-    <a class="variant" href="./index-b.html">시안 B<span>모던 · 미니멀 버전</span></a>
+<span class="draft-tag">시안 A · 소프트</span>
+<div class="page">
+
+  <header class="header">
+    <span class="logo-badge">
+      <img src="./assets/ramwon-logo-hires.png" alt="대한예수교장로회 람원교회">
+    </span>
+    <h1 class="headline">람원교회 청년교구에 오신 것을 환영합니다<span class="heart">♥</span></h1>
+    <p class="sub">아래에 간단한 정보를 남겨주시면, 예배 후 새가족부에서 안내드리겠습니다.</p>
+  </header>
+
+  <div class="card">
+
+    <div class="today">
+      <span class="pill">날 짜</span>
+      <span class="date-value" id="todayLabel"></span>
+    </div>
+
+    <div class="form-error" id="formError"></div>
+
+    <form id="regForm">
+
+      <div class="field">
+        <span class="pill">이 름<span class="required-mark">*</span></span>
+        <input type="text" name="name" id="name" placeholder="이름을 입력해주세요" autocomplete="name" required>
+      </div>
+
+      <div class="field">
+        <span class="pill">성 별</span>
+        <div class="choices two" role="radiogroup" aria-label="성별">
+          <div class="choice">
+            <input type="radio" name="gender" id="gender-m" value="형제">
+            <label for="gender-m"><span class="dot"></span>형제</label>
+          </div>
+          <div class="choice">
+            <input type="radio" name="gender" id="gender-f" value="자매">
+            <label for="gender-f"><span class="dot"></span>자매</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="pill">생년월일</span>
+        <input type="date" name="birth_date" id="birth_date">
+      </div>
+
+      <div class="field">
+        <span class="pill">연락처<span class="required-mark">*</span></span>
+        <input type="tel" name="phone" id="phone" placeholder="010-0000-0000" autocomplete="tel" required>
+        <p class="helper">청년교구에서는 예배 참석 여부 확인과 새가족 양육 모임 안내를 위해 연락처를 요청드립니다.</p>
+      </div>
+
+      <div class="field">
+        <span class="pill">다니던 교회</span>
+        <div class="choices two" role="radiogroup" aria-label="다니던 교회">
+          <div class="choice">
+            <input type="radio" name="prior_church_status" id="church-yes" value="있음" data-reveal="church-name-wrap">
+            <label for="church-yes"><span class="dot"></span>있음</label>
+          </div>
+          <div class="choice">
+            <input type="radio" name="prior_church_status" id="church-no" value="없음" data-reveal="">
+            <label for="church-no"><span class="dot"></span>없음</label>
+          </div>
+        </div>
+        <div class="conditional" id="church-name-wrap">
+          <div class="church-search" id="churchSearch">
+            <div class="church-search-input-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M20 20L16.5 16.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input type="text" id="church_search_input" placeholder="교회 이름이나 주소를 검색해보세요" autocomplete="off">
+            </div>
+            <ul class="church-results" id="churchResults" hidden></ul>
+            <div class="church-manual" id="churchManual" hidden>
+              <input type="text" id="prior_church_name" name="prior_church_name" placeholder="교회명을 직접 입력해주세요">
+              <p class="church-hint">교구에서 확인 후 교회 정보를 채워드릴게요.</p>
+            </div>
+            <input type="hidden" id="prior_church_id" name="prior_church_id">
+            <input type="hidden" id="prior_church_location" name="prior_church_location">
+            <input type="hidden" id="prior_church_naver" name="prior_church_naver">
+          </div>
+          <!-- 네이버 검색이 주지 않는 정보는 새가족이 직접 적는다 -->
+          <div class="church-extra">
+            <div class="church-extra-field">
+              <span class="church-extra-label">교단</span>
+              <input type="text" id="prior_church_denomination" name="prior_church_denomination" placeholder="예: 대한예수교장로회 (모르시면 비워두세요)">
+            </div>
+            <div class="church-extra-field">
+              <span class="church-extra-label">청년부가 있었나요?</span>
+              <div class="choices two" role="radiogroup" aria-label="청년부 유무">
+                <div class="choice"><input type="radio" name="prior_church_has_youth_group" id="youth-o" value="O"><label for="youth-o"><span class="dot"></span>O 있었어요</label></div>
+                <div class="choice"><input type="radio" name="prior_church_has_youth_group" id="youth-x" value="X"><label for="youth-x"><span class="dot"></span>X 없었어요</label></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="pill">세례 여부</span>
+        <div class="choices wide" role="radiogroup" aria-label="세례 여부">
+          <div class="choice"><input type="radio" name="baptism_status" id="bap-1" value="세례"><label for="bap-1"><span class="dot"></span>세례</label></div>
+          <div class="choice"><input type="radio" name="baptism_status" id="bap-2" value="입교"><label for="bap-2"><span class="dot"></span>입교</label></div>
+          <div class="choice"><input type="radio" name="baptism_status" id="bap-3" value="해당사항 없음"><label for="bap-3"><span class="dot"></span>해당사항 없음</label></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="pill">방문경로</span>
+        <div class="choices wide" role="radiogroup" aria-label="방문경로">
+          <div class="choice"><input type="radio" name="visit_source" id="src-1" value="지인 소개"><label for="src-1"><span class="dot"></span>지인 소개</label></div>
+          <div class="choice"><input type="radio" name="visit_source" id="src-2" value="인터넷 검색"><label for="src-2"><span class="dot"></span>인터넷 검색</label></div>
+          <div class="choice"><input type="radio" name="visit_source" id="src-3" value="SNS(유튜브/인스타)"><label for="src-3"><span class="dot"></span>SNS(유튜브/인스타)</label></div>
+          <div class="choice"><input type="radio" name="visit_source" id="src-4" value="기타" data-reveal="visit-etc-wrap"><label for="src-4"><span class="dot"></span>기타</label></div>
+        </div>
+        <div class="conditional" id="visit-etc-wrap">
+          <input type="text" name="visit_source_etc" id="visit_source_etc" placeholder="어떻게 알게 되셨는지 알려주세요">
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="pill">참석 희망</span>
+        <div class="choices wide" role="radiogroup" aria-label="참석 희망">
+          <div class="choice"><input type="radio" name="attendance_wish" id="wish-1" value="예배만 드리고 싶어요"><label for="wish-1"><span class="dot"></span>예배만 드리고 싶어요</label></div>
+          <div class="choice"><input type="radio" name="attendance_wish" id="wish-2" value="당분간은 예배만, 모임은 추후에 고민해볼게요"><label for="wish-2"><span class="dot"></span>당분간은 예배만, 모임은 추후에 고민해볼게요</label></div>
+          <div class="choice"><input type="radio" name="attendance_wish" id="wish-3" value="예배 후 모임까지 함께하고 싶어요"><label for="wish-3"><span class="dot"></span>예배 후 모임까지 함께하고 싶어요</label></div>
+        </div>
+      </div>
+
+      <div class="more">
+        <p>람청이 궁금하다면</p>
+        <div class="more-links">
+          <a href="https://drive.google.com/file/d/1jArgOOVkl-ZcCS6AFqgQY6wLNOC_r4N_/view?usp=sharing" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 2h9l5 5v15H6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 2v5h5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            예배안내 팜플렛
+          </a>
+          <a href="https://www.instagram.com/ramcheong?igsi=YnRxYm9kbzBnNHYw" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor"/></svg>
+            람청 인스타그램
+          </a>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="submit" id="submitBtn">등록하기</button>
+      </div>
+    </form>
+
+    <div class="success" id="success">
+      <img class="mascot-big" src="./assets/mascot.png" alt="">
+      <h2>환영합니다!</h2>
+      <p>새가족 등록이 완료되었습니다.<br>교구에서 빠르게 연락드리겠습니다.</p>
+      <button class="again" id="againBtn" type="button">다른 분 등록하기</button>
+    </div>
+
   </div>
+
+  <p class="privacy">※ 제공해주신 정보는 교회 내 새가족 관리 목적 외에는 사용되지 않습니다.</p>
+</div>
+
+<script src="./script.js"></script>
 </body>
 </html>

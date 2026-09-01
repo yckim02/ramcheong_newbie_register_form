@@ -1,0 +1,330 @@
+/* 람원교회 청년교구 새가족 등록폼 — 스타일 (확정본: 구 시안 A) */
+  @font-face {
+    font-family: "NanumSquare";
+    src: url("./fonts/NanumSquareL.ttf") format("truetype");
+    font-weight: 300; font-display: swap;
+  }
+  @font-face {
+    font-family: "NanumSquare";
+    src: url("./fonts/NanumSquareR.ttf") format("truetype");
+    font-weight: 400; font-display: swap;
+  }
+  @font-face {
+    font-family: "NanumSquare";
+    src: url("./fonts/NanumSquareB.ttf") format("truetype");
+    font-weight: 700; font-display: swap;
+  }
+  @font-face {
+    font-family: "NanumSquare";
+    src: url("./fonts/NanumSquareEB.ttf") format("truetype");
+    font-weight: 800; font-display: swap;
+  }
+
+  :root {
+    --bg: #eef3f8;
+    --surface: #ffffff;
+    --surface-soft: #eef3f8;
+    --accent: #066aeb;
+    --accent-dark: #0552b8;
+    --accent-soft: #e2ecfd;
+    --accent-contrast: #ffffff;
+    --heart: #f0b8c8;
+    --text: #1f2937;
+    --text-muted: #6b7684;
+    --border: #dce3ec;
+    --danger: #b3261e;
+    --shadow: 0 1px 2px rgba(31,41,55,0.05), 0 14px 30px -18px rgba(31,41,55,0.28);
+    --radius-lg: 26px;
+    --radius-md: 16px;
+    --radius-sm: 12px;
+    --font: "NanumSquare", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141922;
+      --surface: #1d2430;
+      --surface-soft: #242c3a;
+      --accent: #4f9aff;
+      --accent-dark: #7ab2ff;
+      --accent-soft: #16273f;
+      --accent-contrast: #ffffff;
+      --heart: #c987a0;
+      --text: #eef1f6;
+      --text-muted: #9ba5b4;
+      --border: #303a4a;
+      --danger: #ff8177;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 14px 30px -18px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141922; --surface: #1d2430; --surface-soft: #242c3a;
+    --accent: #4f9aff; --accent-dark: #7ab2ff; --accent-soft: #16273f; --accent-contrast: #ffffff;
+    --heart: #c987a0; --text: #eef1f6; --text-muted: #9ba5b4; --border: #303a4a; --danger: #ff8177;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 14px 30px -18px rgba(0,0,0,0.6);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: 30px 16px 56px;
+    min-height: 100vh;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  .draft-tag {
+    position: fixed; top: 10px; right: 10px;
+    background: var(--accent); color: var(--accent-contrast);
+    font-size: 11px; font-weight: 700; padding: 5px 10px;
+    border-radius: 999px; z-index: 20; letter-spacing: 0.02em;
+    box-shadow: var(--shadow);
+  }
+
+  .page { width: min(92vw, 640px); margin: 0 auto; position: relative; }
+
+  /* ---------- Header ---------- */
+  .header { text-align: center; margin-bottom: 22px; position: relative; }
+  .logo-badge {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg);
+    padding: 0;
+    margin: 0 auto 10px;
+  }
+  .logo-badge img { height: 46px; width: auto; display: block; }
+  @media (min-width: 460px) { .logo-badge img { height: 56px; } }
+
+  .headline {
+    font-weight: 800;
+    font-size: clamp(20px, 3.4vw, 24px);
+    margin: 0 0 8px;
+    text-wrap: balance;
+  }
+  .headline .heart { color: var(--heart); }
+  .sub {
+    font-size: 14.5px;
+    color: var(--text-muted);
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .mascot {
+    position: absolute;
+    top: -8px; right: 2px;
+    width: 52px; height: auto;
+    opacity: 0.95;
+    transform: rotate(8deg);
+  }
+  @media (max-width: 420px) { .mascot { display: none; } }
+
+  /* ---------- Card ---------- */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 26px 20px 24px;
+  }
+
+  .today {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 16px; margin-bottom: 20px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .today .pill { margin: 0; }
+  .today .date-value { font-variant-numeric: tabular-nums; font-size: 14px; color: var(--text-muted); }
+
+  .field { margin-bottom: 24px; }
+  .field:last-child { margin-bottom: 0; }
+
+  .pill {
+    display: inline-block;
+    background: var(--surface-soft);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 13px;
+    border-radius: 999px;
+    margin-bottom: 11px;
+  }
+  .required-mark { color: var(--accent); margin-left: 2px; }
+
+  .helper { font-size: 12.5px; color: var(--text-muted); margin: 6px 0 0; text-wrap: pretty; }
+
+  input[type="text"], input[type="tel"], input[type="date"] {
+    width: 100%;
+    font-family: var(--font);
+    font-size: 16px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 15px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  input::placeholder { color: var(--text-muted); opacity: 0.7; }
+  input:focus-visible { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  .choices { display: flex; flex-wrap: wrap; gap: 9px; }
+  .choice { position: relative; }
+  .choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .choice label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 14.5px;
+    padding: 13px 15px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    user-select: none;
+  }
+  .choice label .dot {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 1.5px solid var(--border);
+    flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .choice label .dot::after {
+    content: ""; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent-contrast); transform: scale(0);
+    transition: transform 0.12s ease;
+  }
+  .choice input:checked + label { border-color: var(--accent); background: var(--accent-soft); }
+  .choice input:checked + label .dot { background: var(--accent); border-color: var(--accent); }
+  .choice input:checked + label .dot::after { transform: scale(1); }
+  .choice input:focus-visible + label { box-shadow: 0 0 0 3px var(--accent-soft); }
+  .choices.wide .choice { flex: 1 1 100%; }
+  .choices.two .choice { flex: 1 1 calc(50% - 5px); }
+
+  .conditional {
+    margin-top: 10px; max-height: 0; overflow: hidden; opacity: 0;
+    transition: max-height 0.22s ease, opacity 0.2s ease, margin-top 0.22s ease;
+  }
+  .conditional.open { max-height: 680px; opacity: 1; }
+
+  /* ---------- Church search ---------- */
+  .church-search { position: relative; }
+  .church-search-input-wrap { position: relative; }
+  .church-search-input-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+  .church-search-input-wrap input { padding-left: 40px; }
+  .church-results {
+    list-style: none; margin: 8px 0 0; padding: 6px;
+    background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+  }
+  .church-results[hidden] { display: none; }
+  .church-result-item {
+    padding: 10px 10px; border-radius: 10px; cursor: pointer;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .church-result-item:hover, .church-result-item:focus-visible { background: var(--surface-soft); outline: none; }
+  .church-result-item .church-name { font-weight: 700; font-size: 14px; }
+  .church-result-item .church-meta { font-size: 12px; color: var(--text-muted); }
+  .church-manual-btn {
+    background: none; border: none; color: var(--accent); font-family: var(--font);
+    font-weight: 700; font-size: 13px; cursor: pointer; padding: 0; margin-left: 4px; text-decoration: underline;
+  }
+  .church-manual[hidden] { display: none; }
+  .church-manual { margin-top: 8px; }
+  .church-hint { font-size: 12px; color: var(--text-muted); margin: 6px 2px 0; }
+  /* 네이버가 주지 않는 정보(교단/청년부)를 새가족이 직접 적는 구역 */
+  .church-extra { margin-top: 14px; display: grid; gap: 14px; }
+  .church-extra-label { display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+  .church-status { padding: 12px 10px; font-size: 13px; color: var(--text-muted); text-align: center; }
+  .church-foot {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    margin-top: 5px; padding: 8px 10px 3px;
+    border-top: 1px solid var(--border);
+    font-size: 11.5px; color: var(--text-muted);
+  }
+  .church-foot .church-manual-btn { margin-left: 0; }
+
+  /* ---------- Flying courier (submit animation) ---------- */
+  .courier-fly { position: fixed; z-index: 60; pointer-events: none; will-change: transform, opacity; }
+
+  /* ---------- Links (pamphlet / instagram) ---------- */
+  .more {
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border);
+    text-align: center;
+  }
+  .more p { margin: 0 0 12px; font-size: 13px; color: var(--text-muted); }
+  .more-links { display: flex; gap: 10px; }
+  .more-links a {
+    flex: 1 1 0;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    text-decoration: none;
+    font-family: var(--font); font-weight: 700; font-size: 13.5px;
+    color: var(--text);
+    background: var(--surface-soft);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 13px 10px;
+    transition: border-color 0.15s ease, transform 0.05s ease;
+  }
+  .more-links a:hover { border-color: var(--accent); }
+  .more-links a:active { transform: scale(0.98); }
+  .more-links svg { flex: 0 0 auto; }
+
+  /* ---------- Submit ---------- */
+  .submit-row { margin-top: 26px; }
+  button.submit {
+    width: 100%;
+    font-family: var(--font);
+    font-weight: 800;
+    font-size: 16.5px;
+    color: var(--accent-contrast);
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius-md);
+    padding: 17px;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.05s ease;
+  }
+  button.submit:hover { background: var(--accent-dark); }
+  button.submit:active { transform: scale(0.99); }
+  button.submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* 폼(기재란) 카드 바깥, 카드 아래에 작게 놓이는 안내 문구 */
+  .privacy {
+    font-size: 11.5px; line-height: 1.6;
+    color: var(--text-muted); opacity: 0.9;
+    text-align: center; text-wrap: pretty;
+    margin: 14px 6px 0;
+  }
+
+  .form-error {
+    display: none;
+    background: color-mix(in srgb, var(--danger) 12%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--danger) 40%, var(--border));
+    color: var(--danger);
+    border-radius: var(--radius-sm);
+    padding: 11px 13px;
+    font-size: 13.5px;
+    margin-bottom: 18px;
+  }
+  .form-error.show { display: block; }
+
+  /* ---------- Success ---------- */
+  .success { display: none; text-align: center; padding: 20px 4px 6px; }
+  .success.show { display: block; }
+  .success .mascot-big { width: 84px; height: auto; margin: 0 auto 14px; }
+  .success h2 { font-weight: 800; font-size: 22px; margin: 0 0 10px; }
+  .success p { color: var(--text-muted); font-size: 14.5px; margin: 0; }
+  .success .again {
+    margin-top: 22px; background: none; border: 1.5px solid var(--border); color: var(--text);
+    font-family: var(--font); font-weight: 700; font-size: 13.5px; padding: 11px 18px;
+    border-radius: 999px; cursor: pointer;
+  }
+
+  form.hidden { display: none; }
