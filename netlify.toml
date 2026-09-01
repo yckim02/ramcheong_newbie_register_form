@@ -1,0 +1,19 @@
+# Netlify에 배포할 때만 쓰이는 설정. (Vercel 배포 시에는 무시됨)
+# 폼이 호출하는 /api/* 경로를 각각의 함수로 연결한다.
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# 교회 검색 (네이버 지역검색 프록시)
+[[redirects]]
+  from = "/api/church-search"
+  to = "/.netlify/functions/church-search"
+  status = 200
+
+# 등록 저장 (구글시트 Apps Script 프록시)
+# 교회 검색 (네이버 지역검색 프록시)
+[[redirects]]
+  from = "/api/register"
+  to = "/.netlify/functions/register"
+  status = 200
