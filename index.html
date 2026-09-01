@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>람원교회 새가족 등록 · 시안A</title>
-<meta name="description" content="람원교회 청년교구 새가족 등록카드 — 전자 등록폼 시안 A (소프트/캐릭터 버전)" />
+<title>람원교회 청년교구 새가족 등록폼</title>
+<meta name="description" content="람원교회 청년교구 새가족 등록카드 — 전자 등록폼" />
 <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-<span class="draft-tag">시안 A · 소프트</span>
 <div class="page">
 
   <header class="header">
@@ -81,7 +80,7 @@
             <ul class="church-results" id="churchResults" hidden></ul>
             <div class="church-manual" id="churchManual" hidden>
               <input type="text" id="prior_church_name" name="prior_church_name" placeholder="교회명을 직접 입력해주세요">
-              <p class="church-hint">교구에서 확인 후 교회 정보를 채워드릴게요.</p>
+              <p class="church-hint">새가족부에서 확인 후 교회 정보를 채워드릴게요.</p>
             </div>
             <input type="hidden" id="prior_church_id" name="prior_church_id">
             <input type="hidden" id="prior_church_location" name="prior_church_location">
@@ -96,8 +95,8 @@
             <div class="church-extra-field">
               <span class="church-extra-label">청년부가 있었나요?</span>
               <div class="choices two" role="radiogroup" aria-label="청년부 유무">
-                <div class="choice"><input type="radio" name="prior_church_has_youth_group" id="youth-o" value="O"><label for="youth-o"><span class="dot"></span>O 있었어요</label></div>
-                <div class="choice"><input type="radio" name="prior_church_has_youth_group" id="youth-x" value="X"><label for="youth-x"><span class="dot"></span>X 없었어요</label></div>
+                <div class="choice"><input type="radio" name="prior_church_has_youth_group" id="youth-o" value="O"><label for="youth-o"><span class="dot"></span>O</label></div>
+                <div class="choice"><input type="radio" name="prior_church_has_youth_group" id="youth-x" value="X"><label for="youth-x"><span class="dot"></span>X</label></div>
               </div>
             </div>
           </div>
@@ -157,13 +156,13 @@
     <div class="success" id="success">
       <img class="mascot-big" src="./assets/mascot.png" alt="">
       <h2>환영합니다!</h2>
-      <p>새가족 등록이 완료되었습니다.<br>교구에서 빠르게 연락드리겠습니다.</p>
+      <p>새가족 등록이 완료되었습니다.<br>람청 새가족부에서 안내드리겠습니다.</p>
       <button class="again" id="againBtn" type="button">다른 분 등록하기</button>
     </div>
 
   </div>
 
-  <p class="privacy">※ 제공해주신 정보는 교회 내 새가족 관리 목적 외에는 사용되지 않습니다.</p>
+  <p class="privacy">※ 제공해주신 정보는 람청 내 새가족 관리 목적 외에는 사용되지 않습니다.</p>
 </div>
 
 <script src="./script.js"></script>
